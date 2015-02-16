@@ -216,12 +216,18 @@
             if (cancel.requested) return null;
             log.time("building meshes");
             var o = topo.objects;
+            ///
+            var hur_path = topojson.feature(topo, o.pathway);
+            ///
             var coastLo = topojson.feature(topo, µ.isMobile() ? o.coastline_tiny : o.coastline_110m);
             var coastHi = topojson.feature(topo, µ.isMobile() ? o.coastline_110m : o.coastline_50m);
             var lakesLo = topojson.feature(topo, µ.isMobile() ? o.lakes_tiny : o.lakes_110m);
             var lakesHi = topojson.feature(topo, µ.isMobile() ? o.lakes_110m : o.lakes_50m);
             log.timeEnd("building meshes");
             return {
+                ///
+                hur_path: hur_path,
+                ///
                 coastLo: coastLo,
                 coastHi: coastHi,
                 lakesLo: lakesLo,
@@ -298,6 +304,9 @@
 
         var path = d3.geo.path().projection(globe.projection).pointRadius(7);
         var coastline = d3.select(".coastline");
+        ///
+        var pathways = d3.select(".pathways");
+        ///
         var lakes = d3.select(".lakes");
         d3.selectAll("path").attr("d", path);  // do an initial draw -- fixes issue with safari
 
@@ -336,6 +345,9 @@
         dispatch.listenTo(
             inputController, {
                 moveStart: function() {
+                    ///
+                    pathways.datum(mesh.hur_path);
+                    ///
                     coastline.datum(mesh.coastLo);
                     lakes.datum(mesh.lakesLo);
                     rendererAgent.trigger("start");
@@ -344,6 +356,9 @@
                     doDraw_throttled();
                 },
                 moveEnd: function() {
+                    ///
+                    pathways.datum(mesh.hur_path);
+                    ///
                     coastline.datum(mesh.coastHi);
                     lakes.datum(mesh.lakesHi);
                     d3.selectAll("path").attr("d", path);

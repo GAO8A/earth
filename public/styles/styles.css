@@ -208,6 +208,13 @@ body {
     fill: none;
 }
 
+.pathways{
+    stroke: red;
+    stroke-width: 3;
+    fill: none;
+
+}
+
 .firefox .coastline, .firefox .lakes {
     stroke-width: 1.0;
 }
